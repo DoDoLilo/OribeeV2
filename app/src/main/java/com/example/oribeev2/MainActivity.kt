@@ -39,13 +39,12 @@ class MainActivity : ComponentActivity() {
                 OribeeV2Theme {
                     // A surface container using the 'background' color from the theme
                     MyApp(SensorViewModel(this))
-
                 }
             }
-
         }
         checkAuth(this)
     }
+
     private fun checkAuth(activity: Activity) {
         if (ContextCompat.checkSelfPermission(
                 activity,
@@ -89,7 +88,6 @@ fun MyApp(viewModel: SensorViewModel) {
             modifier = Modifier.padding(horizontal = 12.dp),
             color = MaterialTheme.colors.background
         ) {
-
             MainContent(viewModel)
         }
     }
@@ -150,7 +148,6 @@ fun ShowDialog(
     dismiss: () -> Unit,
     confirm: () -> Unit
 ) {
-
     AlertDialog(
         onDismissRequest = dismiss,
         title = {
@@ -172,12 +169,10 @@ fun ShowDialog(
             }
         }
     )
-
-
 }
 
 @Composable
-fun CollectButton(id:Int, count: Int,model: SensorViewModel) {
+fun CollectButton(id: Int, count: Int, model: SensorViewModel) {
     val isStart = rememberSaveable {
         mutableStateOf(false)
     }
@@ -187,19 +182,22 @@ fun CollectButton(id:Int, count: Int,model: SensorViewModel) {
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Switch(checked = isReset, onCheckedChange = {isReset = !isReset},  modifier = Modifier.padding(start = 20.dp))
+        Switch(
+            checked = isReset,
+            onCheckedChange = { isReset = !isReset },
+            modifier = Modifier.padding(start = 20.dp)
+        )
         Text(text = "采集前重置传感器")
         Spacer(modifier = Modifier.padding(horizontal = 20.dp))
         OutlinedButton(
             onClick = {
-                if (isStart.value){
+                if (isStart.value) {
                     model.stop(id, count)
                 } else {
-                    if (isReset){
+                    if (isReset) {
                         model.resetSensor()
                     }
                     model.start()
-
                 }
                 isStart.value = !isStart.value
             },
@@ -207,13 +205,12 @@ fun CollectButton(id:Int, count: Int,model: SensorViewModel) {
                 .wrapContentWidth()
                 .padding(vertical = 10.dp)
         ) {
-            if (isStart.value){
+            if (isStart.value) {
                 Text(text = "结束采集")
             } else {
                 Text(text = "开始采集")
             }
         }
-
     }
 }
 
@@ -232,7 +229,8 @@ fun InfoRow(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal =  20.dp).padding(vertical = 10.dp),
+                .padding(horizontal = 20.dp)
+                .padding(vertical = 10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Row(modifier = Modifier
