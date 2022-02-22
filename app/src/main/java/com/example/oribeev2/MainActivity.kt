@@ -1,5 +1,8 @@
 package com.example.oribeev2
 
+import android.Manifest
+import android.app.Activity
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.widget.EditText
 import androidx.activity.ComponentActivity
@@ -21,11 +24,14 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.example.oribeev2.ui.theme.OribeeV2Theme
 import com.funny.data_saver.core.DataSaverPreferences
 import com.funny.data_saver.core.DataSaverPreferences.Companion.setContext
 import com.funny.data_saver.core.LocalDataSaver
 import com.funny.data_saver.core.rememberDataSaverState
+import java.util.*
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,17 +43,48 @@ class MainActivity : ComponentActivity() {
             CompositionLocalProvider(LocalDataSaver provides dataSaverPreferences) {
                 OribeeV2Theme {
                     // A surface container using the 'background' color from the theme
-                    MyApp()
+                    MyApp(SensorViewModel(this))
 
                 }
             }
 
         }
+        checkAuth(this)
+    }
+    private fun checkAuth(activity: Activity) {
+        if (ContextCompat.checkSelfPermission(
+                activity,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                activity, arrayOf(
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.ACCESS_WIFI_STATE,
+                    Manifest.permission.INTERNET,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ), 1
+            )
+        }
+        if (ContextCompat.checkSelfPermission(
+                activity,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                activity, arrayOf(
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.ACCESS_WIFI_STATE,
+                    Manifest.permission.INTERNET,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ), 1
+            )
+        }
     }
 }
 
 @Composable
-fun MyApp() {
+fun MyApp(viewModel: SensorViewModel) {
 
     Scaffold(topBar = {
         OriBeeTopBar(title = "Oribee 数据采集")
@@ -58,7 +95,7 @@ fun MyApp() {
             color = MaterialTheme.colors.background
         ) {
 
-            MainContent()
+            MainContent(viewModel)
         }
     }
 
@@ -77,10 +114,9 @@ fun OriBeeTopBar(title: String) {
 }
 
 @Composable
-fun MainContent() {
+fun MainContent(model: SensorViewModel) {
     var id by rememberDataSaverState(key = "id", default = 1)
     var count by rememberDataSaverState(key = "count", default = 1)
-
     Column(
         modifier = Modifier
             .padding(vertical = 20.dp)
@@ -106,9 +142,7 @@ fun MainContent() {
             }
         )
         Divider()
-        CollectButton {
-
-        }
+        CollectButton(id, count, model)
     }
 
 }
@@ -148,21 +182,41 @@ fun showDialog(
 }
 
 @Composable
-fun CollectButton(handler: () -> Unit = {}) {
-    Surface(
+fun CollectButton(id:Int, count: Int,model: SensorViewModel) {
+    val isStart = rememberSaveable {
+        mutableStateOf(false)
+    }
+    var isReset by rememberDataSaverState(key = "reset", default = false)
+    Row(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 10.dp)
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
     ) {
+        Switch(checked = isReset, onCheckedChange = {isReset = !isReset},  modifier = Modifier.padding(start = 20.dp))
+        Text(text = "采集前重置传感器")
+        Spacer(modifier = Modifier.padding(horizontal = 20.dp))
         OutlinedButton(
             onClick = {
-                handler()
+                if (isStart.value){
+                    model.stop(id, count)
+                } else {
+                    if (isReset){
+                        model.resetSensor()
+                    }
+                    model.start()
+
+                }
+                isStart.value = !isStart.value
             },
             modifier = Modifier
                 .wrapContentWidth()
                 .padding(vertical = 10.dp)
         ) {
-            Text(text = "开始采集")
+            if (isStart.value){
+                Text(text = "结束采集")
+            } else {
+                Text(text = "开始采集")
+            }
         }
 
     }
@@ -183,7 +237,7 @@ fun InfoRow(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp),
+                .padding(horizontal =  20.dp).padding(vertical = 10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Row(modifier = Modifier
@@ -220,14 +274,5 @@ fun InfoRow(
                 )
             }
         }
-    }
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    OribeeV2Theme {
-        MyApp()
     }
 }
