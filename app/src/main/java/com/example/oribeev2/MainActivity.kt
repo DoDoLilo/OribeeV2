@@ -4,12 +4,10 @@ import android.Manifest
 import android.app.Activity
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.widget.EditText
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -20,9 +18,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -31,7 +27,6 @@ import com.funny.data_saver.core.DataSaverPreferences
 import com.funny.data_saver.core.DataSaverPreferences.Companion.setContext
 import com.funny.data_saver.core.LocalDataSaver
 import com.funny.data_saver.core.rememberDataSaverState
-import java.util.*
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -148,7 +143,7 @@ fun MainContent(model: SensorViewModel) {
 }
 
 @Composable
-fun showDialog(
+fun ShowDialog(
     title: String,
     count: Int,
     countChangeHandler: (String) -> Unit,
@@ -262,7 +257,7 @@ fun InfoRow(
                 Text(text = "+1")
             }
             if (isDislogShown.value) {
-                showDialog(dismiss = {
+                ShowDialog(dismiss = {
                     isDislogShown.value = false
                 }, confirm = {
                     isDislogShown.value = false

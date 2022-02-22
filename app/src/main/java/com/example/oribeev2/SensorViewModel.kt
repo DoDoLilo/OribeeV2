@@ -6,7 +6,7 @@ import android.hardware.SensorManager
 import android.os.Build
 import androidx.lifecycle.ViewModel
 
-class SensorViewModel(val context: Context): ViewModel() {
+class SensorViewModel(private val context: Context): ViewModel() {
 
     private var sensorBee: SensorBee =
         sensorBee(sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager) {
