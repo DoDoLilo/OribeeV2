@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -18,6 +19,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
@@ -113,7 +115,8 @@ fun MainContent(model: SensorViewModel) {
     Column(
         modifier = Modifier
             .padding(vertical = 20.dp)
-            .padding(top = 150.dp)
+            .padding(top = 150.dp),
+
     ) {
         InfoRow(
             text = "人员序号：",
@@ -203,7 +206,10 @@ fun CollectButton(id: Int, count: Int, model: SensorViewModel) {
             },
             modifier = Modifier
                 .wrapContentWidth()
-                .padding(vertical = 10.dp)
+                .padding(vertical = 10.dp),
+            colors = ButtonDefaults.outlinedButtonColors(backgroundColor = if (isStart.value) MaterialTheme.colors.primary else MaterialTheme.colors.surface,
+                contentColor = if (isStart.value) MaterialTheme.colors.surface else MaterialTheme.colors.primary
+                )
         ) {
             if (isStart.value) {
                 Text(text = "结束采集")
@@ -213,6 +219,8 @@ fun CollectButton(id: Int, count: Int, model: SensorViewModel) {
         }
     }
 }
+
+
 
 @Composable
 fun InfoRow(
