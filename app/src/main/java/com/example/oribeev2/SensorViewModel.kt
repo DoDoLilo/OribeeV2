@@ -26,10 +26,6 @@ class SensorViewModel(private val context: Context): ViewModel() {
                 )
             )
             registerSensors()
-
-            addDataChangedListener {
-                // no data would be shown, now
-            }
         }
     fun start(){
         sensorBee.startRecord(0L)
