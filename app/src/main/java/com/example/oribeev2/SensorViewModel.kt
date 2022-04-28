@@ -39,7 +39,7 @@ class SensorViewModel(private val context: Context): ViewModel() {
         sensorBee.resetSensors()
     }
 
-    fun stop(filePath:String){
+    private fun stop(filePath:String){
         sensorBee.stopRecordAndSave(filePath)
     }
     fun stop(id:Int, count:Int){
