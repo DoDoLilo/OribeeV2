@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -18,6 +19,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
@@ -39,13 +41,12 @@ class MainActivity : ComponentActivity() {
                 OribeeV2Theme {
                     // A surface container using the 'background' color from the theme
                     MyApp(SensorViewModel(this))
-
                 }
             }
-
         }
         checkAuth(this)
     }
+
     private fun checkAuth(activity: Activity) {
         if (ContextCompat.checkSelfPermission(
                 activity,
@@ -89,7 +90,6 @@ fun MyApp(viewModel: SensorViewModel) {
             modifier = Modifier.padding(horizontal = 12.dp),
             color = MaterialTheme.colors.background
         ) {
-
             MainContent(viewModel)
         }
     }
@@ -115,7 +115,8 @@ fun MainContent(model: SensorViewModel) {
     Column(
         modifier = Modifier
             .padding(vertical = 20.dp)
-            .padding(top = 150.dp)
+            .padding(top = 150.dp),
+
     ) {
         InfoRow(
             text = "人员序号：",
@@ -150,7 +151,6 @@ fun ShowDialog(
     dismiss: () -> Unit,
     confirm: () -> Unit
 ) {
-
     AlertDialog(
         onDismissRequest = dismiss,
         title = {
@@ -172,12 +172,10 @@ fun ShowDialog(
             }
         }
     )
-
-
 }
 
 @Composable
-fun CollectButton(id:Int, count: Int,model: SensorViewModel) {
+fun CollectButton(id: Int, count: Int, model: SensorViewModel) {
     val isStart = rememberSaveable {
         mutableStateOf(false)
     }
@@ -187,35 +185,42 @@ fun CollectButton(id:Int, count: Int,model: SensorViewModel) {
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Switch(checked = isReset, onCheckedChange = {isReset = !isReset},  modifier = Modifier.padding(start = 20.dp))
+        Switch(
+            checked = isReset,
+            onCheckedChange = { isReset = !isReset },
+            modifier = Modifier.padding(start = 20.dp)
+        )
         Text(text = "采集前重置传感器")
         Spacer(modifier = Modifier.padding(horizontal = 20.dp))
         OutlinedButton(
             onClick = {
-                if (isStart.value){
+                if (isStart.value) {
                     model.stop(id, count)
                 } else {
-                    if (isReset){
+                    if (isReset) {
                         model.resetSensor()
                     }
                     model.start()
-
                 }
                 isStart.value = !isStart.value
             },
             modifier = Modifier
                 .wrapContentWidth()
-                .padding(vertical = 10.dp)
+                .padding(vertical = 10.dp),
+            colors = ButtonDefaults.outlinedButtonColors(backgroundColor = if (isStart.value) MaterialTheme.colors.primary else MaterialTheme.colors.surface,
+                contentColor = if (isStart.value) MaterialTheme.colors.surface else MaterialTheme.colors.primary
+                )
         ) {
-            if (isStart.value){
+            if (isStart.value) {
                 Text(text = "结束采集")
             } else {
                 Text(text = "开始采集")
             }
         }
-
     }
 }
+
+
 
 @Composable
 fun InfoRow(
@@ -232,7 +237,8 @@ fun InfoRow(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal =  20.dp).padding(vertical = 10.dp),
+                .padding(horizontal = 20.dp)
+                .padding(vertical = 10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Row(modifier = Modifier
