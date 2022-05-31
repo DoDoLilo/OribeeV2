@@ -22,7 +22,7 @@ class SensorBee(private val sensorManager: SensorManager) {
     var offset = 0L
     fun sensorTypes(types: Array<Int>) {
         this.types = types
-        sensors = types.map {
+        sensors = types.mapNotNull {
             sensorManager.getDefaultSensor(it)
         }
         statusMask = Array(types.size) { false }
