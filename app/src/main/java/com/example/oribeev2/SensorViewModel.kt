@@ -22,7 +22,6 @@ class SensorViewModel(private val context: Context): ViewModel() {
                     Sensor.TYPE_MAGNETIC_FIELD,
                     Sensor.TYPE_GRAVITY,
                     Sensor.TYPE_LINEAR_ACCELERATION,
-                    Sensor.TYPE_PRESSURE
                 )
             )
             registerSensors()
