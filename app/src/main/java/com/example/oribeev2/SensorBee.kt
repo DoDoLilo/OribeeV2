@@ -6,6 +6,9 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.util.Log
 import java.lang.StringBuilder
+import java.util.concurrent.ScheduledExecutorService
+import java.util.concurrent.ScheduledThreadPoolExecutor
+import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 
 fun sensorBee(sensorManager: SensorManager, init: SensorBee.() -> Unit): SensorBee {
@@ -17,6 +20,7 @@ fun sensorBee(sensorManager: SensorManager, init: SensorBee.() -> Unit): SensorB
 class SensorBee(private val sensorManager: SensorManager) {
     var frequency: Int = 200
     private val stringBuilder = StringBuilder()
+    private var scheduledThreadPoolExecutor: ScheduledExecutorService? = null
     private val filePath: String = ""
     var headingAngles: Double = 0.0
     var offset = 0L
@@ -46,16 +50,21 @@ class SensorBee(private val sensorManager: SensorManager) {
 
     private fun start() {
         stringBuilder.clear()
-        thread(start = true) {
-            while (status == Status.Running) {
-//                postProcessOrientation()
-                //note post process must run before generating data string d.
-                val d = "${time + offset}, ${datas.toCsvString()}"
-                Log.d("sensor", d)
-                stringBuilder.appendLine(d)
-                Thread.sleep((1000 / frequency).toLong())
-            }
-        }
+        scheduledThreadPoolExecutor = ScheduledThreadPoolExecutor(1)
+        scheduledThreadPoolExecutor?.scheduleAtFixedRate({
+            stringBuilder.appendLine("${System.currentTimeMillis()}, ${datas.toCsvString()}")
+        }, 0, (1000 / frequency).toLong(), TimeUnit.MILLISECONDS)
+
+//        thread(start = true) {
+//            while (status == Status.Running) {
+////                postProcessOrientation()
+//                //note post process must run before generating data string d.
+//                val d = "${time + offset}, ${datas.toCsvString()}"
+//                Log.d("sensor", d)
+//                stringBuilder.appendLine(d)
+//                Thread.sleep((1000 / frequency).toLong())
+//            }
+//        }
     }
 
     private fun postProcessOrientation() {
@@ -172,6 +181,7 @@ class SensorBee(private val sensorManager: SensorManager) {
 
     fun stopRecordAndSave(filePath: String = this.filePath) {
         status = Status.STOPPING
+        scheduledThreadPoolExecutor?.shutdown()
         writeToLocalStorage(filePath, stringBuilder.toString())
     }
 

@@ -59,6 +59,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
-    implementation 'com.github.FunnySaltyFish:ComposeDataSaver:v1.0.0'
+//    implementation 'com.github.FunnySaltyFish:ComposeDataSaver:v1.0.0'
+    implementation "com.github.FunnySaltyFish.ComposeDataSaver:data-saver:v1.1.0"
 
 }
