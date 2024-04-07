@@ -8,7 +8,7 @@ android {
     compileSdk 32
 
     defaultConfig {
-        applicationId "com.example.oribeev2"
+        applicationId "com.example.oribeev2_GPS"
         minSdk 26
         targetSdk 32
         versionCode 1
@@ -59,7 +59,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
-//    implementation 'com.github.FunnySaltyFish:ComposeDataSaver:v1.0.0'
-    implementation "com.github.FunnySaltyFish.ComposeDataSaver:data-saver:v1.1.0"
+    implementation 'com.github.FunnySaltyFish:ComposeDataSaver:v1.0.0'
+//    implementation "com.github.FunnySaltyFish.ComposeDataSaver:data-saver:v1.1.0"
 
 }

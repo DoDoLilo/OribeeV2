@@ -52,7 +52,9 @@ class SensorBee(private val sensorManager: SensorManager) {
         stringBuilder.clear()
         scheduledThreadPoolExecutor = ScheduledThreadPoolExecutor(1)
         scheduledThreadPoolExecutor?.scheduleAtFixedRate({
-            stringBuilder.appendLine("${System.currentTimeMillis()}, ${datas.toCsvString()}")
+            //TODO 在这里设置了定时器200hz，往stringBuilder加csv格式的IMU数据String，
+            // 读取GPS，转为String，追加到"${System.currentTimeMillis()}, ${datas.toCsvString()}"
+            stringBuilder.appendLine("${System.currentTimeMillis()}, ${datas.toCsvString()+",0,0,0,0"}")
         }, 0, (1000 / frequency).toLong(), TimeUnit.MILLISECONDS)
 
 //        thread(start = true) {
